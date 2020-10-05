@@ -65,18 +65,18 @@ if (isGetCookie) {
     }
       token = signurlVal.match(/devid=[a-zA-Z0-9_-]+/g)[0]
       await getsign();
-      await activity();
+      //await activity();
       await toRead();
       await lookVideo();
       await StepsTotal();
-      if(getreadred > 0){
+      /*if(getreadred > 0){
         redbody = `redpack_type=article&activity_id=${actid}`
         await Redpack()
       };
       if(getvideored>0){
         redbody = `redpack_type=video&activity_id=${actid}`
         await Redpack()
-      };
+      };*/
       await getTotal();
       await showmsg();
    }
