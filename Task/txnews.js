@@ -65,7 +65,7 @@ if (isGetCookie) {
     }
       token = signurlVal.match(/devid=[a-zA-Z0-9_-]+/g)[0]
       await getsign();
-      //await activity();
+      await activity();
       await toRead();
       await lookVideo();
       await StepsTotal();
