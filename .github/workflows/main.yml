@@ -1,0 +1,25 @@
+name: 中青自动阅读
+
+on:
+  workflow_dispatch:
+  schedule:
+     - cron: '16 23 * * *'
+  watch:
+    types: started
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm install
+        run: |
+          npm install
+          
+      - name: '运行 【中青看点自动阅读】'
+        run: |
+          node Task/Youth_Read.js
+
