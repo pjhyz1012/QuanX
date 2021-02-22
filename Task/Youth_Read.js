@@ -3,7 +3,12 @@ let ReadArr = ['p=9NwGV8Ov71o%3DGvDnjwMsu_ld4qx0YVkhCGk95BHaDHeU0mv6uDOh2O2ipjZo
   
       console.log(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============\n`)
       console.log(`============ 脚本执行-北京时间(UTC+8)：${new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toLocaleString()}  =============\n`)
- 
+
+!(async () => {
+  if (!ReadArr[0]) {
+    console.log($.name, '【提示】请把抓包的请求体填入Github 的 Secrets 中，请以&隔开')
+    return;
+  }
 let indexLast = $.getdata('zqbody_index');
  $.begin = indexLast ? parseInt(indexLast,10) : 1;
  $.index = 0;
@@ -44,14 +49,7 @@ function AutoRead() {
           videoscore += parseInt(readres.items.read_score);
          } 
         }
-        if ($.index % 2 == 0) {
-          if ($.isNode() && process.env.YOUTH_ATIME) {
-            timebodyVal = process.env.YOUTH_ATIME;
-          } else {
-            timebodyVal = $.getdata('autotime_zq');
-          }
-          await readTime()
-        };
+        
         if($.index==ReadArr.length){
         $.log($.index+"次任务已全部完成，即将结束")
         } else {
@@ -79,45 +77,6 @@ function batHost(api, body) {
         },
         body: body
     }
-}
-
-function readTime() {
-  return new Promise((resolve, reject) => {
-        $.post(batHost('user/stay.json',timebodyVal), (error, resp, data) => {
-            let timeres = JSON.parse(data)
-            if (timeres.error_code == 0) {
-                readtimes = timeres.time / 60
-              $.log(`阅读时长共计` + Math.floor(readtimes) + `分钟`)
-            }
-            resolve()
-        })
-    })
-}
-
-function Getbody() {
-  if ($request && $request.method != `OPTIONS` && $request.url.match(/\/article\/info\/get/)) {
-    bodyVal = $request.url.split("?")[1];
-    if (YouthBody) {
-      if (YouthBody.indexOf(bodyVal) > -1) {
-        $.log("此阅读请求已存在，本次跳过")
-      } else if (YouthBody.indexOf(bodyVal) == -1) {
-        YouthBodys = YouthBody + "&" + bodyVal;
-        $.setdata(YouthBodys, 'youth_autoread');
-        $.log(`${$.name}获取阅读: 成功, YouthBodys: ${bodyVal}`);
-        bodys = YouthBodys.split("&")
-        $.msg($.name, "获取第"+bodys.length+"个阅读请求: 成功🎉", ``)
-      }
-    } else {
-      $.setdata(bodyVal, 'youth_autoread');
-      $.log(`${$.name}获取阅读: 成功, YouthBodys: ${bodyVal}`);
-      $.msg($.name, `获取第一个阅读请求: 成功🎉`, ``)
-    }
-  } else if($request&&$request.method!=`OPTIONS`&&$request.url.match(/\/v5\/user\/stay/)){
-      const timebodyVal=$request.body;
-      if(timebodyVal)           $.setdata(timebodyVal,'autotime_zq');
-   $.log(`${$.name}获取阅读时长: 成功, timebodyVal: ${timebodyVal}`);
-   $.msg($.name,`获取阅读时长: 成功🎉`,``)
- }
 }
 
 
