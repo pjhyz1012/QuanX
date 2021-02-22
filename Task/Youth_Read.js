@@ -23,7 +23,7 @@ let indexLast = $.getdata('zqbody_index');
        await AutoRead();
     };
  }
-   $.log("本次共阅读"+artsnum+"次资讯，共获得"+readscore+"青豆\n观看"+videosnum+"次视频，获得"+videoscore+"青豆(不含0青豆次数)\n")
+   $.log("本次共阅读"+artsnum+"次资讯，共获得"+read_score+"青豆\n观看"+videosnum+"次视频，获得"+video_score+"青豆(不含0青豆次数)\n")
    console.log(`-------------------------\n\n中青看点共完成${$.index}次阅读，共计获得${readscore+videoscore}个青豆，阅读请求全部结束`);
    $.msg($.name, `本次运行共完成${$.index}次阅读，共计获得${readscore+videoscore}个青豆`)
 })()
