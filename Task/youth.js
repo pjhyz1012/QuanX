@@ -9,20 +9,19 @@
 
 const $ = new Env("中青看点");
 
-const notify = $.isNode() ? require('./sendNotify') : '';
-//const youthNode = $.isNode() ? require('./youth_env') : '';
+const notify = '';
 
 // 可设置部分
-let notifyInterval = $.getdata("notifytimes") || 50; //通知间隔，默认抽奖每50次通知一次，如需关闭全部通知请设为0
-let ONCard = $.getdata('zqcard') || "false"; //早起打卡开关
-let s = $.getdata('delay_rotary_zq') || "10"; //转盘延迟时间
-let withdrawcash = $.getdata('zqcash') || 30; //提现金额
-let cardTime = $.getdata('zqtime') || "05"; //打卡时间
+let notifyInterval = 50; //通知间隔，默认抽奖每50次通知一次，如需关闭全部通知请设为0
+let ONCard = "false"; //早起打卡开关
+let s = "10"; //转盘延迟时间
+let withdrawcash = 100; //提现金额
+let cardTime = "05"; //打卡时间
 let readtimes = 0;
 
 // 需获取部分
-let withdrawUrl = $.getdata('cashurl_zq'); //提现地址，可选
-let withdrawBody = $.getdata('cashbody_zq'); //提现请求，可选
+let withdrawUrl = ''; //提现地址，可选
+let withdrawBody = ''; //提现请求，可选
 let cookieYouth = '&uid=46712370&cookie=MDAwMDAwMDAwMJCMpN-w09Wtg5-Bb36eh6CPqHualq2jmrCarWKxzZexhKKCma6oqmqXr6NthJl7mI-shMmXeqDau4StacS3o7GFonbfrt-qZ4GJfbOEY2Ft&cookie_id=77d4bd3b5ff426711f1d9d51fb660213';
 let artBody = 'p=9NwGV8Ov71o%3DGvDnjwMsu_lk8V15hrmPeFtKCBAoDX5kqrLpJGAkdwUFrZElDt7JkNPoukCr4LNBcsHUql0CIKl2I8U01IbyRPIMjn9MbDYxaGA86bW6ZMX1tpuS8JuFkn10U6RN5q-ZsAgn7Pj6x2RlmTm_ETr0BFNc48V7zfUBE2iCaPoHKp7Pe0A5iwitQ9P9me2wBTv05bmIGXewKl525_opz_1NbNGKR9UP4hXayo0COCPLV-0arksjEq_60BdeAfqymmxkpE76ZkWTtK-ZM7SEX8zJdn2S7S5_ivMXn9hT00E6LXuxCKM_U39Qmk4TvvtxXHnJ2REUKPjSDuT53Q9B0lhZP9JO4d-o8pSXkO9Vqn6Bjkc3RGjgoD6bI8pGFkx_QBnQ9zRKXpKTBYMx3uzMNFb0HI8gJAWJ4oYbQDF-W5L7pQpHxNWWypqFA4-IZfmD5YfgR8x2LPkuXiTBJPkZxHA5W3rbTIS3SZY715bN8yH-RuhV3Vx18g1eGgpAEwDMzPnEql3HgbAF8qycPwEOBMzs-3NUN9rCIsXWZCpAd6I1H0GL3e0p1NcSOTKkXMIAuCjETFTJcq9JQZC9NhfUYzwWcubNsoWJP71ssEd3dXk-ulOFmzAaKfMdObsHsV4rmYZgm3Sn3XZca5GNgpfPR_053rFoCKLDau5tdKBQDHhS7kpWLumnrN3uYrTkoT2Qvv2wzfvPbEJRuwLOgg_mgrzMawnAJHSppDRVq3jCEqn2IczgOlUdsq-YweEmd2vqs-NIjtdOFKH38HpPll3-PDqiLEhD0nrmafdMvwsKhHCklz7qC20TbQAyajftTGt94QQ7igVS_VIwfPSh6V_75nF0jfFN3xfGDf14v1F416OnWd8%3D';
 let readTimes = 'p=9NwGV8Ov71o%3DGvDnjwMsu_ld4qx0YVkhCGSN79Nz9uYVd_6x03zS0fnS8kKdOyWyDMKSICaFBvwH5U4nsR_vvJsjHH2Z81CBL7eyJjtPmVfyM0x8EAsS-_ESh4-JImy11uTAadxMJCYAdD7P_w27pQt6_tIUTgtnDG7LOKwRL-IZbYYNciqqQLILDKrbcFOop9Pnx339B2A8XWnJGWmoUO_cCh1xlKu5Fd5LCPHOv8Y7N6KIK7iEquOE_aW-RNSLpRZraTYhtbyXQ7bewBEVeb4z4WylG6fG_NiSFYYoJPi7O5-MRpNNzhCpmDPe_QshImFAdqXwkbH7ymmNSvFniKsObM9OQpedbt4Dii_0Tt2SNJq4KOI0xQ_YM68q8jRTbzzvSGAytUXW8EVKPnnPNjWxKv8DIaQVRDc7qyU9hfch4DhUo7SL4HvekJdrE1IvZiG_uvWjhjlrubdhSK-lv1HCxTtkXu6vMDSqNVaLCoOQ3FZ_HGPOAZ9SFoTUtlTha0NPk8UEYUE1K1PDgPdXxeR-0hOmsvE4ae2EKIUnIBDEqpdtIh8zhPus1bU6GzQKPbignv-5OW5IrZyFoKWpyQ9Ct4uq2evsr7tulY0nqVo9HPT4pzr0oAbJGEaNqur8kJYnJE-m1JRN0jugAHjQN4LXR1E5zrlnYeG9IcWlSRwuUz3hoFinfBEL_Gc_YSTOgCBhFqdFemCiKG5HSj3qSE4f9gZ2dGhKUv-x2gMkt0fllyePCPiJjvx07pQRjuN5KLFuq2eY7vAev5k19aMJ4rBEPXvqFUGGUh_-WeJI1LRP0MP6POT5CRPchKJ1oPKhqVWWzEC9oC5C';
