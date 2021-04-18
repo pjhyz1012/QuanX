@@ -3,7 +3,7 @@ name: 中青看点
 on:
   workflow_dispatch:
   schedule:
-     - cron: '*/8 * * * *'
+     - cron: '8 15,21 * * *'
   watch:
     types: started
 
@@ -25,4 +25,4 @@ jobs:
       - name: '运行 【中青看点】'
         run: |
           cd ~/QuanX
-          node Task/youth.js
+          node Task/youth_old.js
