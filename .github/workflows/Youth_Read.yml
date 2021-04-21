@@ -21,5 +21,5 @@ jobs:
           
       - name: '运行 【中青看点自动阅读】'
         run: |
-          node Task/Youth_Read1.js
+          node Task/Youth_Read_old.js
 
